@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wants</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b0d12">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Wants">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<style>
+  :root { --bg:#0b0d12; --card:#151922; --line:#232836; --text:#f2f4f8; --muted:#8a93a6; --up:#22c55e; --down:#ef4444; --acc:#14b8a6; --warn:#f59e0b; }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); }
+  body { font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    min-height: 100vh; min-height: 100dvh;
+    padding: calc(env(safe-area-inset-top) + 14px) calc(env(safe-area-inset-right) + 18px) calc(env(safe-area-inset-bottom) + 18px) calc(env(safe-area-inset-left) + 18px);
+    -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; letter-spacing: .2px; }
+  .brand img { width: 30px; height: 30px; border-radius: 8px; }
+  .status { display: flex; align-items: center; gap: 7px; font-size: 13px; color: var(--muted); background: none; border: 0; padding: 4px 0; }
+  .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+  .dot.live { background: var(--up); } .dot.poll { background: var(--warn); } .dot.off { background: var(--down); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px 18px 16px; margin-bottom: 14px; }
+  .label { font-size: 14px; color: var(--muted); font-weight: 600; letter-spacing: .6px; text-transform: uppercase; }
+  .row1 { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .big { font-size: clamp(40px, 13.5vw, 58px); font-weight: 750; letter-spacing: -1px; margin-top: 6px; font-variant-numeric: tabular-nums; line-height: 1.05; white-space: nowrap; }
+  .big .cur { font-size: .48em; color: var(--muted); font-weight: 600; margin-right: 4px; letter-spacing: 0; }
+  .sub { margin-top: 6px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; line-height: 1.5; }
+  .bar { height: 10px; background: #232836; border-radius: 999px; overflow: hidden; margin-top: 12px; }
+  .bar > i { display: block; height: 100%; width: 0; background: var(--acc); border-radius: 999px; transition: width .5s ease; }
+  .bar.done > i { background: var(--up); }
+  .pct { font-size: 15px; font-weight: 700; padding: 3px 9px; border-radius: 999px; background: rgba(20,184,166,.13); color: var(--acc); font-variant-numeric: tabular-nums; }
+  .pct.done { color: var(--up); background: rgba(34,197,94,.13); }
+  .grp { display: flex; justify-content: space-between; align-items: center; margin: 18px 2px 8px; }
+  .grp .label { font-size: 13px; }
+  .grp button { background: none; border: 0; color: var(--acc); font-size: 15px; font-weight: 650; padding: 6px 0 6px 12px; }
+  .want { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 12px 10px 12px 14px; margin-bottom: 8px; display: flex; gap: 10px; align-items: stretch; transition: transform .2s ease; }
+  .want.moved { animation: pop .35s ease; } @keyframes pop { 0% { background: #1d2a2a; } 100% { background: var(--card); } }
+  .want .main { flex: 1; min-width: 0; }
+  .want .r { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .want .n { font-weight: 700; font-size: 16px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .want .rank { color: var(--muted); font-weight: 650; margin-right: 6px; font-variant-numeric: tabular-nums; }
+  .want .c { font-weight: 700; font-size: 16px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .want .note { font-size: 13px; color: var(--muted); margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .want .bar { height: 8px; margin-top: 9px; }
+  .want .s { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--muted); margin-top: 6px; font-variant-numeric: tabular-nums; gap: 8px; }
+  .want .s b { color: var(--text); font-weight: 650; } .want .s .ok { color: var(--up); font-weight: 650; }
+  .mv { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+  .mv button { width: 40px; height: 36px; border-radius: 10px; border: 1px solid var(--line); background: #1b202b; color: var(--text); font-size: 17px; line-height: 1; padding: 0; }
+  .mv button:disabled { opacity: .25; }
+  .empty { color: var(--muted); font-size: 14px; text-align: center; padding: 20px 0; }
+  .meta { text-align: center; font-size: 12px; color: #5d6577; margin-top: 18px; line-height: 1.6; }
+  .btn { flex: 1; background: #232836; color: var(--text); border: 1px solid var(--line); border-radius: 12px; font-size: 16px; font-weight: 650; padding: 13px; }
+  .btn.pri { background: var(--acc); color: #04201d; border-color: var(--acc); }
+  .btn.del { background: none; color: var(--down); border-color: rgba(239,68,68,.4); }
+  .btns { display: flex; gap: 8px; margin-top: 14px; }
+  .sheet { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: flex; align-items: flex-end; z-index: 10; }
+  .sheet .box { background: var(--card); width: 100%; max-height: 90dvh; overflow: auto; border-radius: 20px 20px 0 0; padding: 18px 18px calc(env(safe-area-inset-bottom) + 18px); -webkit-user-select: text; user-select: text; }
+  .sheet h3 { margin: 0 0 8px; font-size: 18px; }
+  label.f { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  input { width: 100%; background: var(--bg); color: var(--text); border: 1px solid var(--line); border-radius: 10px; padding: 11px; font-size: 16px; -webkit-user-select: text; user-select: text; }
+  .hint { font-size: 12px; color: var(--muted); margin-top: 8px; line-height: 1.45; }
+  .lock { max-width: 420px; margin: 12vh auto 0; text-align: center; }
+  .lock img { width: 76px; height: 76px; border-radius: 18px; }
+  .lock h1 { font-size: 24px; margin: 14px 0 4px; }
+  .lock p { color: var(--muted); font-size: 14px; margin: 0 0 18px; }
+  .who { display: flex; gap: 8px; margin-top: 10px; }
+  .who button { flex: 1; background: #1b202b; color: var(--muted); border: 1px solid var(--line); border-radius: 12px; padding: 11px; font-size: 15px; font-weight: 650; }
+  .who button.on { color: var(--text); border-color: var(--acc); background: rgba(20,184,166,.12); }
+  .err { color: var(--down); font-size: 14px; min-height: 20px; margin-top: 10px; }
+  .toast { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom) + 20px); transform: translateX(-50%); background: #232836; border: 1px solid var(--line); color: var(--text); padding: 10px 16px; border-radius: 999px; font-size: 14px; z-index: 20; opacity: 0; transition: opacity .25s; pointer-events: none; max-width: 90vw; text-align: center; }
+  .toast.on { opacity: 1; }
+  .ro { background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.4); color: var(--warn); border-radius: 12px; padding: 9px 12px; font-size: 13px; margin-bottom: 12px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div id="lockView" class="lock" hidden>
+  <img src="icons/apple-touch-icon.png" alt="">
+  <h1>Wants</h1>
+  <p>Enter the family passcode to open.</p>
+  <form id="lockForm" autocomplete="off">
+    <input id="pass" type="password" placeholder="Passcode" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="current-password">
+    <div class="who" id="who"><button type="button" data-w="Tim">I'm Tim</button><button type="button" data-w="Tena">I'm Tena</button></div>
+    <div class="btns"><button class="btn pri" type="submit" id="unlockBtn">Unlock</button></div>
+    <div class="err" id="lockErr"></div>
+  </form>
+</div>
+
+<div id="appView" hidden>
+  <header>
+    <div class="brand"><img src="icons/apple-touch-icon.png" alt="">Wants</div>
+    <button class="status" id="statusBtn" type="button"><span id="dot" class="dot"></span><span id="statusText">Loading…</span></button>
+  </header>
+  <div id="roBanner" class="ro" hidden>Can't reach the sync server, so this is the last backup copy (read-only). Pull to refresh later.</div>
+
+  <section class="card">
+    <div class="row1"><span class="label">Wants savings</span><span class="pct" id="totPct">—</span></div>
+    <div class="big"><span class="cur">CA$</span><span id="bal">—</span></div>
+    <div class="bar" id="totBar"><i></i></div>
+    <div class="sub" id="totSub">&nbsp;</div>
+    <div class="sub" id="asOf">&nbsp;</div>
+  </section>
+
+  <div class="grp"><span class="label">Wants · priority order</span><button id="addBtn" type="button">+ Add</button></div>
+  <div id="list"></div>
+  <div class="meta" id="meta"></div>
+  <div class="meta"><button class="status" id="lockBtn" type="button" style="margin:0 auto;color:#5d6577">Lock on this phone</button></div>
+</div>
+
+<div class="sheet" id="sheet" hidden>
+  <form class="box" id="editForm" autocomplete="off">
+    <h3 id="sheetTitle">Add a want</h3>
+    <label class="f" for="fName">What is it?</label>
+    <input id="fName" maxlength="60" placeholder="e.g. New patio furniture" required>
+    <label class="f" for="fCost">Estimated cost (CA$)</label>
+    <input id="fCost" inputmode="decimal" placeholder="e.g. 2500" required>
+    <label class="f" for="fNote">Note (optional)</label>
+    <input id="fNote" maxlength="80" placeholder="e.g. Summer 2027">
+    <div class="hint" id="fHint">New wants go to the bottom of the list. Use the arrows to move them up.</div>
+    <div class="btns"><button class="btn" type="button" id="cancelBtn">Cancel</button><button class="btn pri" type="submit">Save</button></div>
+    <div class="btns" id="delRow" hidden><button class="btn del" type="button" id="delBtn">Delete this want</button></div>
+  </form>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  'use strict';
+  // Public config only. Everything stored remotely is AES-GCM encrypted with a key derived from the family passcode,
+  // which is never in this file. Without the passcode, the stored data is unreadable.
+  const CFG = { listUrl: 'https://textdb.dev/api/data/58b89efa-d96c-4605-99fc-ff6ece60c1b2', salt: '9723c93e73e4cc7692053b0ecad8b156', iterations: 600000 };
+  const $ = id => document.getElementById(id);
+  const money = new Intl.NumberFormat('en-CA', { style: 'currency', currency: 'CAD', maximumFractionDigits: 0 });
+  const money2 = new Intl.NumberFormat('en-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmt = n => money.format(Math.round(n)).replace('CA', '').replace('US', '');
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const S = { key: null, who: null, list: null, bal: null, readOnly: false, busy: false, editing: null, lastSync: 0 };
+
+  // ---------- crypto ----------
+  const hex = h => new Uint8Array(h.match(/../g).map(x => parseInt(x, 16)));
+  const b64 = u => btoa(String.fromCharCode(...u));
+  const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+  async function deriveKey(pass) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(pass), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: hex(CFG.salt), iterations: CFG.iterations }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function enc(obj) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, S.key, new TextEncoder().encode(JSON.stringify(obj))));
+    return JSON.stringify({ v: 1, iv: b64(iv), ct: b64(ct) });
+  }
+  async function dec(txt, key = S.key) {
+    const e = JSON.parse(txt);
+    return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: 'AES-GCM', iv: unb64(e.iv) }, key, unb64(e.ct))));
+  }
+
+  // ---------- data ----------
+  const bust = () => '?t=' + Date.now();
+  async function getText(url) { const r = await fetch(url + bust(), { cache: 'no-store' }); if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); }
+  async function loadBalance(key) { return dec(await getText('balance.enc'), key); }
+  async function loadList() {
+    try { const t = await getText(CFG.listUrl); if (!t.startsWith('{')) throw new Error('empty'); S.readOnly = false; return dec(t); }
+    catch (e) { const t = await getText('list-backup.enc'); S.readOnly = true; return dec(t); }
+  }
+  async function saveList(data) {
+    const r = await fetch(CFG.listUrl, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: await enc(data) });
+    if (!r.ok) throw new Error('save failed (' + r.status + ')');
+  }
+  // Read-modify-write against the latest shared copy so two phones don't clobber each other.
+  async function mutate(fn, okMsg) {
+    if (S.readOnly) { toast('Offline backup is read-only right now'); return; }
+    if (S.busy) return; S.busy = true; setStatus('poll', 'Saving…');
+    try {
+      const latest = await dec(await getText(CFG.listUrl));
+      fn(latest);
+      latest.rev = (latest.rev || 0) + 1; latest.updated = new Date().toISOString(); latest.by = S.who || '?';
+      await saveList(latest); S.list = latest; S.lastSync = Date.now(); render(); setStatus('live'); if (okMsg) toast(okMsg);
+    } catch (e) { setStatus('off', 'Not saved'); toast('Couldn\u2019t save. Check your connection and try again.'); }
+    finally { S.busy = false; }
+  }
+  async function refresh(quiet) {
+    if (!S.key || S.busy) return;
+    if (!quiet) setStatus('poll', 'Syncing…');
+    try {
+      const [bal, list] = await Promise.all([loadBalance(S.key), loadList()]);
+      S.bal = bal; S.list = list; S.lastSync = Date.now();
+      try { localStorage.setItem('wants.cache', JSON.stringify({ bal, list })); } catch (e) {}
+      render(); setStatus(S.readOnly ? 'poll' : 'live', S.readOnly ? 'Backup copy' : null);
+    } catch (e) { setStatus('off'); }
+  }
+
+  // ---------- math ----------
+  const parseD = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
+  const fmtD = (d, yr = true) => d.toLocaleDateString('en-CA', { month: 'short', day: 'numeric', ...(yr ? { year: 'numeric' } : {}) });
+  function firstDeposit(asOf) { const d = parseD(asOf); d.setDate(d.getDate() + 1); while (d.getDay() !== 3) d.setDate(d.getDate() + 1); return d; }
+  function plan() {
+    const bal = S.bal ? S.bal.balance : 0, weekly = (S.bal && S.bal.weekly) || 500;
+    const start = firstDeposit((S.bal && S.bal.asOf) || new Date().toISOString().slice(0, 10));
+    let left = bal, cum = 0;
+    return (S.list ? S.list.wants : []).map(w => {
+      const funded = Math.max(0, Math.min(w.cost, left)); left -= funded; cum += w.cost;
+      const need = cum - bal; let eta = null;
+      if (need > 0) { const wk = Math.ceil(need / weekly - 1e-9); eta = new Date(start); eta.setDate(eta.getDate() + (wk - 1) * 7); }
+      return { w, funded, pct: w.cost > 0 ? funded / w.cost * 100 : 100, eta };
+    });
+  }
+
+  // ---------- render ----------
+  function render() {
+    if (!S.list) return;
+    const rows = plan(), bal = S.bal ? S.bal.balance : 0, total = S.list.wants.reduce((a, w) => a + w.cost, 0);
+    const tp = total > 0 ? Math.min(100, bal / total * 100) : 0;
+    $('bal').textContent = money2.format(bal);
+    $('totPct').textContent = tp.toFixed(tp < 10 && tp > 0 ? 1 : 0) + '%';
+    $('totBar').firstElementChild.style.width = tp + '%';
+    $('totSub').textContent = fmt(bal) + ' saved of ' + fmt(total) + ' for ' + S.list.wants.length + ' want' + (S.list.wants.length === 1 ? '' : 's');
+    if (S.bal) $('asOf').textContent = 'RBC eSavings ••' + S.bal.accountLast4 + ' · as of ' + fmtD(parseD(S.bal.asOf)) + ' · +' + fmt(S.bal.weekly) + ' every Wednesday';
+    $('roBanner').hidden = !S.readOnly;
+    const n = rows.length;
+    $('list').innerHTML = n ? rows.map((r, i) => {
+      const done = r.pct >= 99.999, p = done ? 100 : r.pct;
+      return '<div class="want" data-id="' + esc(r.w.id) + '">' +
+        '<div class="main" data-act="edit">' +
+          '<div class="r"><span class="n"><span class="rank">' + (i + 1) + '</span>' + esc(r.w.name) + '</span><span class="c">' + fmt(r.w.cost) + '</span></div>' +
+          (r.w.note ? '<div class="note">' + esc(r.w.note) + '</div>' : '') +
+          '<div class="bar' + (done ? ' done' : '') + '"><i style="width:' + p + '%"></i></div>' +
+          '<div class="s"><span><b>' + (done ? '100' : p.toFixed(p > 0 && p < 10 ? 1 : 0)) + '%</b> · ' + fmt(r.funded) + ' of ' + fmt(r.w.cost) + '</span>' +
+            (done ? '<span class="ok">Funded ✓</span>' : '<span>Funded ~' + fmtD(r.eta) + '</span>') + '</div>' +
+        '</div>' +
+        '<div class="mv"><button type="button" data-act="up" aria-label="Move up"' + (i === 0 ? ' disabled' : '') + '>▲</button>' +
+          '<button type="button" data-act="down" aria-label="Move down"' + (i === n - 1 ? ' disabled' : '') + '>▼</button></div>' +
+      '</div>';
+    }).join('') : '<div class="empty">No wants yet. Tap + Add to start your list.</div>';
+    const u = S.list.updated ? new Date(S.list.updated) : null;
+    $('meta').innerHTML = 'Money fills wants from the top down: #1 is fully funded before #2 gets anything.<br>' +
+      'Dates assume ' + fmt((S.bal && S.bal.weekly) || 500) + ' lands every Wednesday.' +
+      (u && !isNaN(u) ? '<br>List last changed ' + fmtD(u) + ' ' + u.toLocaleTimeString('en-CA', { hour: 'numeric', minute: '2-digit' }) + (S.list.by ? ' by ' + esc(S.list.by) : '') : '') +
+      (S.bal && S.bal.updated ? '<br>Balance updated by Gordon ' + fmtD(parseD(S.bal.updated.slice(0, 10))) : '');
+  }
+  function setStatus(mode, text) {
+    $('dot').className = 'dot ' + ({ live: 'live', poll: 'poll', off: 'off' }[mode] || '');
+    $('statusText').textContent = text || ({ live: 'Synced', poll: 'Syncing…', off: 'Offline' })[mode] || mode;
+  }
+  let tt; function toast(m) { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2200); }
+
+  // ---------- interactions ----------
+  $('list').addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const id = b.closest('.want').dataset.id, act = b.dataset.act;
+    if (act === 'edit') return openSheet(S.list.wants.find(w => w.id === id));
+    const dir = act === 'up' ? -1 : 1;
+    // optimistic move for snappy feel, then confirm against shared copy
+    const ws = S.list.wants, i = ws.findIndex(w => w.id === id), j = i + dir;
+    if (i < 0 || j < 0 || j >= ws.length) return;
+    [ws[i], ws[j]] = [ws[j], ws[i]]; render(); flash(id);
+    mutate(d => { const a = d.wants, x = a.findIndex(w => w.id === id), y = x + dir; if (x >= 0 && y >= 0 && y < a.length) [a[x], a[y]] = [a[y], a[x]]; })
+      .then(() => flash(id));
+  });
+  function flash(id) { const el = document.querySelector('.want[data-id="' + CSS.escape(id) + '"]'); if (el) { el.classList.remove('moved'); void el.offsetWidth; el.classList.add('moved'); } }
+  $('addBtn').addEventListener('click', () => openSheet(null));
+  function openSheet(w) {
+    S.editing = w ? w.id : null;
+    $('sheetTitle').textContent = w ? 'Edit want' : 'Add a want';
+    $('fName').value = w ? w.name : ''; $('fCost').value = w ? String(w.cost) : ''; $('fNote').value = w ? (w.note || '') : '';
+    $('fHint').hidden = !!w; $('delRow').hidden = !w; $('sheet').hidden = false;
+    setTimeout(() => (w ? null : $('fName').focus()), 50);
+  }
+  const closeSheet = () => { $('sheet').hidden = true; S.editing = null; document.activeElement && document.activeElement.blur(); };
+  $('cancelBtn').addEventListener('click', closeSheet);
+  $('sheet').addEventListener('click', e => { if (e.target.id === 'sheet') closeSheet(); });
+  $('editForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const name = $('fName').value.trim(), cost = Math.round(Number($('fCost').value.replace(/[$,\s]/g, '')) * 100) / 100, note = $('fNote').value.trim();
+    if (!name) return toast('Give it a name');
+    if (!(cost > 0)) return toast('Enter an estimated cost');
+    const id = S.editing; closeSheet();
+    if (id) mutate(d => { const w = d.wants.find(x => x.id === id); if (w) Object.assign(w, { name, cost, note }); }, 'Saved');
+    else mutate(d => d.wants.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random(), name, cost, note, created: new Date().toISOString(), by: S.who }), 'Added');
+  });
+  $('delBtn').addEventListener('click', () => {
+    const id = S.editing, w = S.list.wants.find(x => x.id === id);
+    if (!w || !confirm('Delete “' + w.name + '”?')) return;
+    closeSheet(); mutate(d => { d.wants = d.wants.filter(x => x.id !== id); }, 'Deleted');
+  });
+  $('statusBtn').addEventListener('click', () => refresh());
+  $('lockBtn').addEventListener('click', () => { if (!confirm('Lock the app on this phone? You\u2019ll need the passcode again.')) return; localStorage.removeItem('wants.pass'); localStorage.removeItem('wants.cache'); location.reload(); });
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refresh(true); });
+  setInterval(() => { if (!document.hidden && $('sheet').hidden) refresh(true); }, 30000);
+
+  // ---------- unlock ----------
+  document.querySelectorAll('#who button').forEach(b => b.addEventListener('click', () => {
+    S.who = b.dataset.w; document.querySelectorAll('#who button').forEach(x => x.classList.toggle('on', x === b));
+  }));
+  async function unlock(pass, silent) {
+    const key = await deriveKey(pass);
+    const bal = await loadBalance(key); // throws if passcode is wrong
+    S.key = key; S.bal = bal;
+    try { localStorage.setItem('wants.pass', pass); if (S.who) localStorage.setItem('wants.who', S.who); } catch (e) {}
+    $('lockView').hidden = true; $('appView').hidden = false;
+    await refresh();
+  }
+  $('lockForm').addEventListener('submit', async e => {
+    e.preventDefault(); $('lockErr').textContent = '';
+    const pass = $('pass').value.trim(); if (!pass) return;
+    if (!S.who) { $('lockErr').textContent = 'Tap Tim or Tena first.'; return; }
+    $('unlockBtn').disabled = true; $('unlockBtn').textContent = 'Checking…';
+    try { await unlock(pass); }
+    catch (err) { $('lockErr').textContent = err && err.name === 'OperationError' ? 'That passcode didn\u2019t work.' : 'Couldn\u2019t connect. Try again.'; }
+    finally { $('unlockBtn').disabled = false; $('unlockBtn').textContent = 'Unlock'; }
+  });
+  (async () => {
+    let saved = null; try { saved = localStorage.getItem('wants.pass'); S.who = localStorage.getItem('wants.who'); } catch (e) {}
+    if (saved) {
+      $('appView').hidden = false;
+      try { const c = JSON.parse(localStorage.getItem('wants.cache') || 'null'); if (c) { S.bal = c.bal; S.list = c.list; render(); } } catch (e) {}
+      try { await unlock(saved, true); return; }
+      catch (err) { if (err && err.name === 'OperationError') { localStorage.removeItem('wants.pass'); $('appView').hidden = true; } else { setStatus('off'); return; } }
+    }
+    $('lockView').hidden = false;
+  })();
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});
+})();
+</script>
+</body>
+</html>
